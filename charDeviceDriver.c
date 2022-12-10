@@ -8,7 +8,6 @@
 #include <linux/fs.h>
 #include <asm/uaccess.h> /* for put_user */
 #include <charDeviceDriver.h>
-#include "ioctl.h"
 
 MODULE_LICENSE("GPL");
 
@@ -30,22 +29,8 @@ static long device_ioctl(struct file *file,		 /* see include/linux/fs.h */
 						 unsigned int ioctl_num, /* number and param for ioctl */
 						 unsigned long ioctl_param)
 {
-
-	/*
-	 * Switch according to the ioctl called
-	 */
-	if (ioctl_num == RESET_COUNTER)
-	{
-		counter = 0;
-		/* 	    return 0; */
-		return 5; /* can pass integer as return value */
-	}
-
-	else
-	{
-		/* no operation defined - return failure */
-		return -EINVAL;
-	}
+	printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
+	return -EINVAL;
 }
 
 /*

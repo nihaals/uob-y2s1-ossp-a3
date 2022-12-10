@@ -1,1 +1,0 @@
-#define RESET_COUNTER 0
