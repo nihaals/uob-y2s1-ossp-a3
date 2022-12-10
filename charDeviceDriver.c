@@ -1,12 +1,7 @@
-/*
- *  chardev.c: Creates a read-only char device that says how many times
- *  you've read from the dev file
- */
-
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/fs.h>
-#include <asm/uaccess.h> /* for put_user */
+#include <asm/uaccess.h>
 #include <charDeviceDriver.h>
 
 // In case this affects tests
@@ -27,8 +22,8 @@ DEFINE_MUTEX(devLock);
 static int counter = 0;
 
 static long device_ioctl(
-    struct file *file,      /* see include/linux/fs.h */
-    unsigned int ioctl_num, /* number and param for ioctl */
+    struct file *file,
+    unsigned int ioctl_num,
     unsigned long ioctl_param)
 {
     printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
@@ -63,7 +58,7 @@ int init_module(void)
  */
 void cleanup_module(void)
 {
-    /*  Unregister the device */
+    /* Unregister the device */
     unregister_chrdev(Major, DEVICE_NAME);
 }
 
@@ -71,13 +66,9 @@ void cleanup_module(void)
  * Methods
  */
 
-/*
- * Called when a process tries to open the device file, like
- * "cat /dev/mycharfile"
- */
+/* Called when a process tries to open the device file, like `cat /dev/chardev` */
 static int device_open(struct inode *inode, struct file *file)
 {
-
     mutex_lock(&devLock);
     if (Device_Open)
     {
@@ -107,17 +98,14 @@ static int device_release(struct inode *inode, struct file *file)
     return 0;
 }
 
-/*
- * Called when a process, which already opened the dev file, attempts to
- * read from it.
- */
+/* Called when a process, which already opened the dev file, attempts to read from it. */
 static ssize_t device_read(
-    struct file *filp, /* see include/linux/fs.h   */
+    struct file *filp, /* see include/linux/fs.h */
     char *buffer,      /* buffer to fill with data */
-    size_t length,     /* length of the buffer     */
+    size_t length,     /* length of the buffer */
     loff_t *offset)
 {
-    /* result of function calls */
+    /* Result of function calls */
     int result;
 
     /*
@@ -128,13 +116,11 @@ static ssize_t device_read(
     result = copy_to_user(buffer, msg, length);
     if (result > 0)
         return -EFAULT; /* copy failed */
-    /*
-     * Most read functions return the number of bytes put into the buffer
-     */
+    /* Most read functions return the number of bytes put into the buffer */
     return length;
 }
 
-/* Called when a process writes to dev file: echo "hi" > /dev/hello  */
+/* Called when a process writes to dev file, e.g. `echo "Hello, World!" > /dev/chardev` */
 static ssize_t
 device_write(struct file *filp, const char *buff, size_t len, loff_t *off)
 {
