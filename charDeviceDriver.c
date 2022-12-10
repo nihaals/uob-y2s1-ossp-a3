@@ -9,6 +9,7 @@
 #include <asm/uaccess.h> /* for put_user */
 #include <charDeviceDriver.h>
 
+// In case this affects tests
 MODULE_LICENSE("GPL");
 
 /*
