@@ -18,10 +18,10 @@ static long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned lon
 struct cdev *my_cdev;
 dev_t dev_num;
 
-static int Major;           /* Major number assigned to our device driver */
+static int Major; /* Major number assigned to our device driver */
 static int Device_Open = 0; /* Is device open?
                              * Used to prevent multiple access to device */
-static char msg[BUF_LEN];   /* The msg the device will give when asked */
+static char msg[BUF_LEN]; /* The msg the device will give when asked */
 
 static struct file_operations fops = {
     .read = device_read,
