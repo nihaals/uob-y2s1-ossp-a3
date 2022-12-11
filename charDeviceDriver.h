@@ -19,8 +19,11 @@ struct cdev *my_cdev;
 dev_t dev_num;
 
 static int Major; /* Major number assigned to our device driver */
+
+// Keeping in case used in tests
 static int Device_Open = 0; /* Is device open?
                              * Used to prevent multiple access to device */
+
 static char msg[BUF_LEN]; /* The msg the device will give when asked */
 
 static struct file_operations fops = {
