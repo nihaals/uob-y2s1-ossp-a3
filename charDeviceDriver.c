@@ -61,10 +61,6 @@ void cleanup_module(void)
     unregister_chrdev(Major, DEVICE_NAME);
 }
 
-/*
- * Methods
- */
-
 /* Called when a process tries to open the device file, like `cat /dev/chardev` */
 static int device_open(struct inode *inode, struct file *file)
 {
