@@ -1,0 +1,6 @@
+[package]
+name = "uob-y2s1-ossp-a3"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
