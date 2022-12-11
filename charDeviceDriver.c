@@ -7,6 +7,8 @@
 // In case this affects tests
 MODULE_LICENSE("GPL");
 
+DEFINE_MUTEX(devLock);
+
 /*
  * This function is called whenever a process tries to do an ioctl on our
  * device file. We get two extra parameters (additional to the inode and file
@@ -17,9 +19,6 @@ MODULE_LICENSE("GPL");
  * calling process), the ioctl call returns the output of this function.
  *
  */
-
-DEFINE_MUTEX(devLock);
-static int counter = 0;
 
 static long device_ioctl(
     struct file *file,
