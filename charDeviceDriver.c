@@ -9,17 +9,11 @@ MODULE_LICENSE("GPL");
 
 DEFINE_MUTEX(mutex);
 
-/*
- * This function is called whenever a process tries to do an ioctl on our
- * device file. We get two extra parameters (additional to the inode and file
- * structures, which all device functions get): the number of the ioctl called
- * and the parameter given to the ioctl function.
- *
- * If the ioctl is write or read/write (meaning output is returned to the
- * calling process), the ioctl call returns the output of this function.
- *
- */
-
+// This function is called whenever a process tries to do an ioctl on our device file.
+// We get two extra parameters (additional to the inode and file structures, which all device functions get):
+// the number of the ioctl called and the parameter given to the ioctl function.
+// If the ioctl is write or read/write (meaning output is returned to the calling process),
+// the ioctl call returns the output of this function.
 static long device_ioctl(
     struct file *file,
     unsigned int ioctl_num,
@@ -29,9 +23,7 @@ static long device_ioctl(
     return -EINVAL;
 }
 
-/*
- * This function is called when the module is loaded
- */
+// This function is called when the module is loaded.
 int init_module(void)
 {
     Major = register_chrdev(0, DEVICE_NAME, &fops);
@@ -52,16 +44,14 @@ int init_module(void)
     return SUCCESS;
 }
 
-/*
- * This function is called when the module is unloaded
- */
+// This function is called when the module is unloaded.
 void cleanup_module(void)
 {
-    /* Unregister the device */
+    // Unregister the device
     unregister_chrdev(Major, DEVICE_NAME);
 }
 
-/* Called when a process tries to open the device file, like `cat /dev/chardev` */
+// Called when a process tries to open the device file, like `cat /dev/chardev`.
 static int device_open(struct inode *inode, struct file *file)
 {
     mutex_lock(&mutex);
@@ -78,7 +68,7 @@ static int device_open(struct inode *inode, struct file *file)
     return SUCCESS;
 }
 
-/* Called when a process closes the device file. */
+// Called when a process closes the device file.
 static int device_release(struct inode *inode, struct file *file)
 {
     mutex_lock(&mutex);
@@ -89,27 +79,25 @@ static int device_release(struct inode *inode, struct file *file)
     return 0;
 }
 
-/* Called when a process, which already opened the dev file, attempts to read from it. */
+// Called when a process, which already opened the dev file, attempts to read from it.
 static ssize_t device_read(
-    struct file *filp, /* see include/linux/fs.h */
-    char *buffer,      /* buffer to fill with data */
-    size_t length,     /* length of the buffer */
+    struct file *filp, // see include/linux/fs.h
+    char *buffer,      // buffer to fill with data
+    size_t length,     // length of the buffer
     loff_t *offset)
 {
-    /*
-     * Actually put the data into the buffer
-     */
+    // Actually put the data into the buffer
     if (strlen(msg) + 1 < length)
         length = strlen(msg) + 1;
     int result = copy_to_user(buffer, msg, length);
     if (result > 0)
-        return -EFAULT; /* copy failed */
+        return -EFAULT; // copy failed
 
     // Most read functions return the number of bytes put into the buffer
     return length;
 }
 
-/* Called when a process writes to dev file, e.g. `echo "Hello, World!" > /dev/chardev` */
+// Called when a process writes to dev file, e.g. `echo "Hello, World!" > /dev/chardev`.
 static ssize_t
 device_write(struct file *filp, const char *buff, size_t len, loff_t *off)
 {
