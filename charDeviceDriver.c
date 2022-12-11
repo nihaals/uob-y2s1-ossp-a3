@@ -104,7 +104,8 @@ static ssize_t device_read(
     int result = copy_to_user(buffer, msg, length);
     if (result > 0)
         return -EFAULT; /* copy failed */
-    /* Most read functions return the number of bytes put into the buffer */
+
+    // Most read functions return the number of bytes put into the buffer
     return length;
 }
 
