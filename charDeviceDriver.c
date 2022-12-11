@@ -70,7 +70,6 @@ static int device_open(struct inode *inode, struct file *file)
         mutex_unlock(&mutex);
         return -EBUSY;
     }
-    Device_Open++;
     mutex_unlock(&mutex);
     sprintf(msg, "I already told you %d times Hello world!\n", counter++);
 
@@ -83,7 +82,6 @@ static int device_open(struct inode *inode, struct file *file)
 static int device_release(struct inode *inode, struct file *file)
 {
     mutex_lock(&mutex);
-    Device_Open--; /* We're now ready for our next caller */
     mutex_unlock(&mutex);
 
     module_put(THIS_MODULE);
