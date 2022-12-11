@@ -77,6 +77,7 @@ static int device_open(struct inode *inode, struct file *file)
     Device_Open++;
     mutex_unlock(&mutex);
     sprintf(msg, "I already told you %d times Hello world!\n", counter++);
+
     try_module_get(THIS_MODULE);
 
     return SUCCESS;
@@ -88,10 +89,7 @@ static int device_release(struct inode *inode, struct file *file)
     mutex_lock(&mutex);
     Device_Open--; /* We're now ready for our next caller */
     mutex_unlock(&mutex);
-    /*
-     * Decrement the usage count, or else once you opened the file, you'll
-     * never get get rid of the module.
-     */
+
     module_put(THIS_MODULE);
 
     return 0;
