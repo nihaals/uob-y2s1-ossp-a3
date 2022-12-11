@@ -7,7 +7,7 @@
 // In case this affects tests
 MODULE_LICENSE("GPL");
 
-DEFINE_MUTEX(devLock);
+DEFINE_MUTEX(mutex);
 
 /*
  * This function is called whenever a process tries to do an ioctl on our
@@ -68,14 +68,14 @@ void cleanup_module(void)
 /* Called when a process tries to open the device file, like `cat /dev/chardev` */
 static int device_open(struct inode *inode, struct file *file)
 {
-    mutex_lock(&devLock);
+    mutex_lock(&mutex);
     if (Device_Open)
     {
-        mutex_unlock(&devLock);
+        mutex_unlock(&mutex);
         return -EBUSY;
     }
     Device_Open++;
-    mutex_unlock(&devLock);
+    mutex_unlock(&mutex);
     sprintf(msg, "I already told you %d times Hello world!\n", counter++);
     try_module_get(THIS_MODULE);
 
@@ -85,9 +85,9 @@ static int device_open(struct inode *inode, struct file *file)
 /* Called when a process closes the device file. */
 static int device_release(struct inode *inode, struct file *file)
 {
-    mutex_lock(&devLock);
+    mutex_lock(&mutex);
     Device_Open--; /* We're now ready for our next caller */
-    mutex_unlock(&devLock);
+    mutex_unlock(&mutex);
     /*
      * Decrement the usage count, or else once you opened the file, you'll
      * never get get rid of the module.
