@@ -98,15 +98,12 @@ static ssize_t device_read(
     size_t length,     /* length of the buffer */
     loff_t *offset)
 {
-    /* Result of function calls */
-    int result;
-
     /*
      * Actually put the data into the buffer
      */
     if (strlen(msg) + 1 < length)
         length = strlen(msg) + 1;
-    result = copy_to_user(buffer, msg, length);
+    int result = copy_to_user(buffer, msg, length);
     if (result > 0)
         return -EFAULT; /* copy failed */
     /* Most read functions return the number of bytes put into the buffer */
